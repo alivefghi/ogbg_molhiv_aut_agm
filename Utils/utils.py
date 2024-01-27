@@ -2,6 +2,10 @@ from torch_geometric.utils import to_networkx
 from torch_geometric.data import Data
 from ogb.graphproppred.dataset_pyg import PygGraphPropPredDataset
 
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
 import networkx as nx
 
 
@@ -28,7 +32,7 @@ def pyg_to_networkx(pyg_graph: Data) -> nx.Graph:
 
 
 def get_n_from_each_group(
-    n: int, dataset: PygGraphPropPredDataset
+        n: int, dataset: PygGraphPropPredDataset
 ) -> tuple[list[nx.Graph], list[nx.Graph]]:
     """Get n graphs of each binary grouped graphs from pyg dataset of graphs
 
@@ -61,3 +65,43 @@ def get_n_from_each_group(
             enough_hiv_positive_graphs = enough_hiv_positive_graphs - 1
 
     return hiv_positive_graphs, hiv_negative_graphs
+
+
+def plot_networkx_graph(
+        networkX_graph: nx.Graph, graph_number: int, labels: dict = {}
+) -> None:
+    """Plot one of ten networkx graphs in 2*5 subplot figure
+    Parameters
+    ----------
+    networkX_graph: nx.Graph
+        The networkx graph
+    graph_number: int
+        The index number of graph to be inserted in figure as subplot
+    label: dict
+    Returns
+    ----------
+    None
+    """
+    node_color = "lightsteelblue"
+    hiv = ""
+    if networkX_graph.graph["y"][0][0] != 0:
+        node_color = "lightcoral"
+        hiv = "HIV "
+
+    plt.subplot(2, 5, graph_number + 1, frameon=False)
+    plt.title(f"{hiv}Graph # {str(graph_number + 1)}")
+    plt.axis("off")
+
+    options = {
+        "node_color": node_color,
+        "node_size": 1500,
+        "font_size": 20,
+        "width": 5,
+    }
+
+    if labels != {}:
+        options["labels"] = labels
+
+    nx.draw_kamada_kawai(networkX_graph, with_labels=True, **options)
+
+    return None
