@@ -1,7 +1,7 @@
 from ogb.graphproppred.dataset_pyg import PygGraphPropPredDataset
 from torch_geometric.loader import DataLoader
 from torch_geometric.data import Data
-from ogbg_molhiv_aut_agm.code.Utils.utils import pyg_to_networkx
+from Utils.utils import pyg_to_networkx, get_n_from_each_group
 from tqdm import tqdm
 
 import os
@@ -46,3 +46,15 @@ print("\n")
 print("edge_index:\t\t", graph.edge_index.shape)
 print(graph.edge_index)
 print("\n")
+
+graph: Data = dataset[0]
+networkx_graph = pyg_to_networkx(graph)
+print(f"graph type: {type(networkx_graph)}")
+print(f"graph node attributes: {networkx_graph.nodes(data=True)}")
+print(f"graph attributes: {networkx_graph.graph['y'][0][0]}")
+
+
+(hiv_positive_graphs, hiv_negative_graphs) = get_n_from_each_group(n=5, dataset=dataset)
+
+print(len(hiv_positive_graphs))
+print(len(hiv_negative_graphs))
