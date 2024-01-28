@@ -1,4 +1,20 @@
-# ogbg-molhiv-aut-agm
+# OGBG-MolHIV
+
+This is a repository for Algorithm, Graph and Machine learning (AGM) lab at Amirkabir University of Technology (AUT).
+
+# Instructions
+
+To project structured in the following ways:
+
+    .
+    ├── code
+    │   ├── dataset             # Dataset
+    │   ├── utils               # Helper classes and functions
+    │   └── notebooks           # Python notebooks
+    └── docs                    # Documentation files and Miscellaneous information
+
+
+
 
 https://ogb.stanford.edu/docs/graphprop/#ogbg-mol
 
