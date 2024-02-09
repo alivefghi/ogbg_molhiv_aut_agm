@@ -44,6 +44,56 @@ git clone https://github.com/alivefghi/ogbg_molhiv_aut_agm.git
 pip install -r requirements.txt
 ```
 
+### Solve the issue regarding the GraKel dependency.
+
+Inside this project, we are using GraKel library for their good implementation of the Graph Kernels. However, there is currently a bug in their library after they updated their codebase. I reported their problem inside this [Print <class 'grakel.graph.Graph'>](https://github.com/ysig/GraKeL/issues/102). To solve the problem for now your project please follow this suggestion fix on the library code.
+
+Update following code to the `get_edges` function at `site-packages/grakel/graph.py`
+
+```python
+    def get_edges(self, purpose="adjacency", with_weights=False):
+        """Create an iterable of edges as tuples.
+
+        Parameters
+        ----------
+        purpose : str, valid_values={"adjacency", "dictionary"}, default="adjacency"
+            Defines if the edges is given for the "dictionary" format of the
+            graph (symbol) to the "adjacency" (index).
+
+        Returns
+        -------
+        vertices : list
+            Returns a list of tuples for edges.
+
+        """
+        if purpose not in ["adjacency", "dictionary", "any"]:
+            raise ValueError('purpose is either "adjacency" of "dictionary"')
+
+        if purpose == "any":
+            if self._format in ['all', 'adjacency']:
+                purpose = "adjacency"
+            else:
+                purpose = "dictionary"
+
+        if purpose == "adjacency":
+            self.desired_format("adjacency", warn=True)
+            idx_i, idx_j = np.where(self.adjacency_matrix > 0)
+            edges = zip(idx_i, idx_j)
+            if with_weights:
+                return list(zip(edges, self.adjacency_matrix[idx_i, idx_j]))
+            else:
+                return list(edges)
+        if purpose == "dictionary":
+            self.desired_format("dictionary", warn=True)
+            if with_weights:
+                return [(i, j) for i in self.edge_dictionary.keys()
+                        for j in self.edge_dictionary[i].keys()]
+            else:
+                return [((i, j), self.edge_dictionary[i][j])
+                        for i in self.edge_dictionary.keys()
+                        for j in self.edge_dictionary[i].keys()]
+```
+
 ## Usage
 To run the project, you can run the notebooks.
 

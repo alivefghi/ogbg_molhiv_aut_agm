@@ -7,6 +7,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 import networkx as nx
+from grakel import Graph
 
 
 def pyg_to_networkx(pyg_graph: Data) -> nx.Graph:
@@ -30,6 +31,15 @@ def pyg_to_networkx(pyg_graph: Data) -> nx.Graph:
         to_undirected=True,
     )
 
+
+
+
+def networkx_to_grakel(networkx_graph: nx.Graph) -> Graph:
+    # Create node labels
+    node_labels = {node: node for node in networkx_graph.nodes()}
+
+    # Convert to grakel.Graph
+    return Graph(nx.to_dict_of_lists(networkx_graph), node_labels=node_labels, graph_format='dictionary')
 
 def get_n_from_each_group(
         n: int, dataset: PygGraphPropPredDataset
